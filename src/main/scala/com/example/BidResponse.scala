@@ -20,10 +20,16 @@ trait BidResponseJsonFormats extends SprayJsonSupport with DefaultJsonProtocol {
   implicit val bidFormat = jsonFormat(Bid, "auction_id", "bid", "currency", "creative", "winning_notification", "result")
   implicit val noBidFormat = jsonFormat(NoBid, "auction_id", "result")
 
-  implicit object BidResponseFormat extends RootJsonWriter[BidResponse] {
+  implicit object BidResponseFormat extends RootJsonFormat[BidResponse] {
     override def write(obj: BidResponse): JsValue = obj match {
       case b: Bid => b.toJson
       case nb: NoBid => nb.toJson
     }
+
+    override def read(json: JsValue): BidResponse =
+      json.asJsObject.getFields("result") match {
+        case Seq(JsString("bid")) => json.convertTo[Bid]
+        case Seq(JsString("no_bid")) => json.convertTo[NoBid]
+      }
   }
 }
