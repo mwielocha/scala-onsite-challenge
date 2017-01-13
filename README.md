@@ -2,8 +2,6 @@
 
 ## Template
 
-This code is generated using `spray` template project from branch `on_spray-can_1.3_scala-2.11`.
-
 1. Launch SBT:
 
         $ sbt
