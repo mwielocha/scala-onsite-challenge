@@ -1,5 +1,9 @@
 # Simplified Mobile DSP Challenge
 
+## Dependencies
+
+You will need Java 8+ to run this template (this a the requirement for akka-http).
+
 ## Template
 
 1. Launch SBT:
