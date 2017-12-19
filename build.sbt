@@ -23,6 +23,8 @@ libraryDependencies ++= {
   val akkaHttpV = "10.0.1"
 
   Seq(
+    "org.typelevel" %% "cats-core" % "1.0.0-RC1",
+    "com.chuusai" %% "shapeless" % "2.3.2",
     "com.typesafe.akka"   %% "akka-http-core" % akkaHttpV,
     "com.typesafe.akka"   %% "akka-http"      % akkaHttpV,
     "com.typesafe.akka"   %% "akka-http-spray-json" % akkaHttpV,
