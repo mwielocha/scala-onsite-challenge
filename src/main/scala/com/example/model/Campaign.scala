@@ -11,7 +11,12 @@ case class Campaign(
   country: String,
   mobileName: String,
   connectionType: ConnectionType
-)
+) {
+
+  def updateBudget(amount: BigDecimal): Campaign = {
+    copy(budget = budget - amount)
+  }
+}
 
 object Campaign {
 
