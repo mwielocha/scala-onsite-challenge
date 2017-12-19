@@ -5,7 +5,7 @@ import java.util.UUID
 import akka.actor.ActorRef
 import akka.pattern._
 import akka.util.Timeout
-import com.example.actors.StateActor.Query
+import com.example.actors.StateActor.{Query, UpdateBudget}
 import com.example.model.{Campaign, ConnectionTypes}
 import com.example.{Bid, BidResponse, NoBid}
 
@@ -25,6 +25,11 @@ class BiddingService(private val state: ActorRef) {
 
   private def resolveIp(ip: String): Future[String] = {
     Future.successful("DE")
+  }
+
+  def notify(auctionId: String): Future[Unit] = {
+    state ! UpdateBudget(UUID.fromString(auctionId))
+    Future.unit
   }
 
   def query(

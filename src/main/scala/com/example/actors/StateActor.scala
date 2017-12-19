@@ -35,10 +35,16 @@ case class CampaignState(
   def lock(auctionId: UUID, amount: BigDecimal): CampaignState =
     CampaignState(campaign, locks.filter(Lock.expired) :+ Lock(auctionId, amount))
 
-  def update(auctionId: UUID, amount: BigDecimal): CampaignState =
-    CampaignState(
-      campaign.updateBudget(amount),
-      locks.filter(_.auctionId != auctionId))
+  def update(auctionId: UUID): CampaignState = {
+    (for {
+      lock <- locks.find(_.auctionId == auctionId)
+      amount = lock.amount
+    } yield {
+      CampaignState(
+        campaign.updateBudget(amount),
+        locks.filter(_.auctionId != auctionId))
+    }).getOrElse(this)
+  }
 }
 
 object StateActor {
@@ -56,13 +62,12 @@ object StateActor {
   )
 
   case class LockBudget(id: Campaign.Id, auctionId: UUID, amount: BigDecimal)
-  case class UpdateBudget(id: Campaign.Id, auctionId: UUID, amount: BigDecimal)
+  case class UpdateBudget(auctionId: UUID)
 
   val hashMapping: ConsistentHashMapping = {
     case Add(c) => c.id
     case Get(id) => id
     case LockBudget(id, _, _) => id
-    case UpdateBudget(id, _, _) => id
   }
 }
 
@@ -103,11 +108,13 @@ class StateActor extends Actor {
         updated = state.lock(auctionId, amount)
       } yield campaigns + (state.id -> updated)
 
-    case UpdateBudget(id, auctionId, amount) =>
+    case UpdateBudget(auctionId) =>
 
       for {
-        state <- campaigns.get(id)
-        updated = state.lock(auctionId, amount)
+        state <- campaigns.values.find(
+          _.locks.map(_.auctionId)
+            .contains(auctionId))
+        updated = state.update(auctionId)
       } yield campaigns + (state.id -> updated)
 
   }
