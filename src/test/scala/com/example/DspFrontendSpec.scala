@@ -1,7 +1,7 @@
 package com.example
 
 import akka.actor.Props
-import akka.http.scaladsl.model.StatusCodes
+import akka.http.scaladsl.model.{ContentTypes, StatusCodes}
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import com.example.actors.StateRoutingActor
 import com.example.service.BiddingService
@@ -9,15 +9,15 @@ import org.scalatest.{FunSpec, Matchers}
 
 class DspFrontendSpec extends FunSpec with Matchers with ScalatestRouteTest with BidResponseJsonFormats {
 
-  val state = system.actorOf(Props[StateRoutingActor])
-  val service = new BiddingService(state)
-  val frontend = new DspFrontend(service)
-  
+  private val state = system.actorOf(Props[StateRoutingActor])
+  private val service = new BiddingService(state)
+  private val frontend = new DspFrontend(service)
+
   describe("DspFrontend") {
     it("should return a proper bid response for bid_request") {
-      pending
 
       Get("/bid_request?auction_id=12&ip=127.0.0.1&bundle_name=com.facebook&connection_type=WiFi") ~> frontend() ~> check {
+
         status === StatusCodes.OK
 
         val response = responseAs[Bid]
