@@ -2,15 +2,24 @@ organization  := "com.example"
 
 version       := "0.1"
 
-scalaVersion  := "2.11.8"
+scalaVersion  := "2.12.4"
 
-scalacOptions := Seq("-unchecked", "-deprecation", "-encoding", "utf8")
+scalacOptions ++= Seq(
+  "-deprecation",
+  "-encoding",
+  "UTF-8",
+  "-feature",
+  "-language:existentials",
+  "-language:higherKinds",
+  "-Ypartial-unification",
+  "-language:postfixOps"
+)
 
 javacOptions ++= Seq("-source", "1.7", "-target", "1.7")
 
 libraryDependencies ++= {
-  val akkaV = "2.4.16"
-  val sprayV = "1.3.3"
+  val akkaV = "2.5.4"
+  val sprayV = "1.3.4"
   val akkaHttpV = "10.0.1"
 
   Seq(
@@ -23,4 +32,3 @@ libraryDependencies ++= {
   )
 }
 
-Revolver.settings
