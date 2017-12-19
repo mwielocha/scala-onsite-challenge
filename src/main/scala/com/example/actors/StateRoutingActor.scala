@@ -1,20 +1,29 @@
 package com.example.actors
 
 import akka.actor.{Actor, ActorRef, Props}
-import com.example.actors.StateActor.Query
+import com.example.actors.StateActor.{Add, Query}
 import akka.pattern._
 import akka.util.Timeout
 import com.example.model.Campaign
-import scala.concurrent.duration._
+import com.example.repository.CampaignRepository
 
+import scala.concurrent.duration._
 import scala.concurrent.Future
 
-class StateRoutingActor extends Actor {
+class StateRoutingActor(campaignRepository: CampaignRepository) extends Actor {
 
   private implicit val timeout: akka.util.Timeout = Timeout(200 millis)
 
   import context.dispatcher
 
+  override def preStart(): Unit = {
+    super.preStart()
+
+    campaignRepository.getAll
+      .foreach(_.foreach(x => self ! Add(x)))
+
+  }
+  
   private val stateActors = (1 to 10).map {
     _ => context.actorOf(Props[StateActor])
   }

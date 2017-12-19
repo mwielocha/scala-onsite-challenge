@@ -3,9 +3,9 @@ package com.example.actors
 import java.util.UUID
 
 import akka.actor.Actor
-import com.example.model.Campaign
-import StateActor._
 import akka.routing.ConsistentHashingRouter.ConsistentHashMapping
+import com.example.actors.StateActor._
+import com.example.model.Campaign
 import com.example.model.ConnectionTypes.ConnectionType
 
 case class Lock(

@@ -7,12 +7,15 @@ import akka.pattern._
 import akka.util.Timeout
 import com.example.actors.StateActor.{Query, UpdateBudget}
 import com.example.model.{Campaign, ConnectionTypes}
+import com.example.repository.CampaignRepository
 import com.example.{Bid, BidResponse, NoBid}
 
 import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future}
 
-class BiddingService(private val state: ActorRef) {
+class BiddingService(
+  private val state: ActorRef
+) {
 
   private implicit val timeout: akka.util.Timeout = Timeout(200 millis)
 
